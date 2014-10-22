@@ -20,13 +20,13 @@ public class ElasticService {
 	private static final String ES_INDEX = "musica";
 	
 	@Autowired
-	private Client client;
+	private Client elasticSearchClient;
 	
 	public List<String> autocomplete(String word){
 		CompletionSuggestionBuilder suggestionsBuilder = new CompletionSuggestionBuilder("completar-banda");
 	    suggestionsBuilder.text(word);
 	    suggestionsBuilder.field("name");
-	    SuggestRequestBuilder suggestRequestBuilder = client.prepareSuggest(ES_INDEX).addSuggestion(suggestionsBuilder);
+	    SuggestRequestBuilder suggestRequestBuilder = elasticSearchClient.prepareSuggest(ES_INDEX).addSuggestion(suggestionsBuilder);
 	    
 	    SuggestResponse response = suggestRequestBuilder.execute().actionGet();
 	    

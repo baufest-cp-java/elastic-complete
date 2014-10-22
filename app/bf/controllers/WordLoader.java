@@ -9,10 +9,12 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Random;
 
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -23,33 +25,39 @@ public class WordLoader extends Controller {
 	@Autowired
 	private Client elasticSearchClient;
 	
-	public Result loadWords() throws IOException{
+	public Result loadWords(){
 		InputStream bandsFile = WordLoader.class.getResourceAsStream("/documentos/bandas_def.txt");
 		BufferedReader br = null;
 		String line;
 		
 		br = new BufferedReader(new InputStreamReader(bandsFile, Charset.forName("UTF-8")));
-		while ((line = br.readLine()) != null) {
-			String trimmedLine = line.trim();
-			if(hasText(trimmedLine)){
-				indexSuggestion("bandas", trimmedLine);
+		try {
+			while ((line = br.readLine()) != null) {
+				String trimmedLine = line.trim();
+				if(hasText(trimmedLine)){
+					indexSuggestion("bandas", trimmedLine);
+				}
 			}
+		} catch (Exception e) {
+			Logger.error("fail reading file", e);
 		}
 		return ok();
 	}
 
 	private void indexSuggestion(String type, String suggestion) throws IOException {
-		elasticSearchClient.prepareIndex(ES_INDEX,type).setSource(
+		IndexResponse response = elasticSearchClient.prepareIndex(ES_INDEX,type).setSource(
 			XContentFactory.jsonBuilder()
 				.startObject()
-				.field("name", suggestion)
-				.startObject("suggest")
-					.array("input", suggestion)
-					.array("output", suggestion)
-					.startObject("payload")
-						.field("id", new Random().nextInt(5000) + 1)
+					.field("name", suggestion)
+					.startObject("suggest")
+						.array("input", suggestion)
+						.array("output", suggestion)
+						.startObject("payload")
+							.field("id", new Random().nextInt(5000) + 1)
+						.endObject()
 					.endObject()
-				.endObject()
-			.endObject()).execute().actionGet();
+				.endObject()).execute().actionGet();
+		
+		response.getIndex();
 	}
 }

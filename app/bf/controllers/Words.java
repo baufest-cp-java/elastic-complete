@@ -17,7 +17,7 @@ import bf.util.JsonUtil;
  * @author rfanego
  */
 @org.springframework.stereotype.Controller
-public class AutoCompleteController extends Controller {
+public class Words extends Controller {
 	
 	@Autowired
 	private ElasticService elasticService;

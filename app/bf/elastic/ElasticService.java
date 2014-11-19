@@ -25,7 +25,7 @@ public class ElasticService {
 	public List<String> autocomplete(String word){
 		CompletionSuggestionBuilder suggestionsBuilder = new CompletionSuggestionBuilder("completar-banda");
 	    suggestionsBuilder.text(word);
-	    suggestionsBuilder.field("name");
+	    suggestionsBuilder.field("suggest");
 	    SuggestRequestBuilder suggestRequestBuilder = elasticSearchClient.prepareSuggest(ES_INDEX).addSuggestion(suggestionsBuilder);
 	    
 	    SuggestResponse response = suggestRequestBuilder.execute().actionGet();

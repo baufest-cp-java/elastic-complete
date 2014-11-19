@@ -10,6 +10,6 @@ GET     /assets/*file               	controllers.Assets.at(path="/public", file)
 
 PUT		/word/loader					@bf.controllers.WordLoader.loadWords()
 
-GET		/word/autocompletion			@bf.controllers.Words.autoComplete(word)
+GET		/word/autocompletion/:word			@bf.controllers.Words.autoComplete(word)
 
-GET		/word/autocompletion/fuzzy		@bf.controllers.Words.fuzzyAutoComplete(word)
+GET		/word/autocompletion/fuzzy/:word		@bf.controllers.Words.fuzzyAutoComplete(word)

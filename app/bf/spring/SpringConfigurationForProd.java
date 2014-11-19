@@ -1,7 +1,5 @@
 package bf.spring;
 
-import static bf.util.ConfigurationAccessor.i;
-import static bf.util.ConfigurationAccessor.s;
 import static org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder;
 
 import org.elasticsearch.client.Client;
@@ -29,9 +27,9 @@ public class SpringConfigurationForProd {
 	public Client elasticSearchClient() {
 		TransportClient transportClient = null;
 		try {
-			String elasticSearchHost = s("elasticsearch.host");
+			String elasticSearchHost = play.Configuration.root().getString("elasticsearch.host");
 
-			Settings settings = settingsBuilder().put("cluster.name", s("elasticsearch.cluster.name")).put("client.transport.sniff", true)
+			Settings settings = settingsBuilder().put("cluster.name", play.Configuration.root().getString("elasticsearch.cluster.name")).put("client.transport.sniff", true)
 					.build();
 
 			String[] esHosts = elasticSearchHost.split(",");
@@ -39,7 +37,7 @@ public class SpringConfigurationForProd {
 			transportClient = new TransportClient(settings);
 
 			for (String host : esHosts) {
-				transportClient.addTransportAddress(new InetSocketTransportAddress(host, i("elasticsearch.port")));
+				transportClient.addTransportAddress(new InetSocketTransportAddress(host, play.Configuration.root().getInt("elasticsearch.port")));
 				Logger.info("ES - Client Started. Hosts: " + host);
 			}
 		} catch (Exception e) {

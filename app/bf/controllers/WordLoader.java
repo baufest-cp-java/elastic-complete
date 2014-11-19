@@ -15,8 +15,11 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 @org.springframework.stereotype.Controller
 public class WordLoader extends Controller {
@@ -51,7 +54,7 @@ public class WordLoader extends Controller {
 					.field("name", suggestion)
 					.startObject("suggest")
 						.array("input", suggestion)
-						.array("output", suggestion)
+						.field("output", suggestion)
 						.startObject("payload")
 							.field("id", new Random().nextInt(5000) + 1)
 						.endObject()

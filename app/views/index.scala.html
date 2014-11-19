@@ -1,7 +1,34 @@
 @(message: String)
 
-@main("Welcome to Play") {
+@main("Welcome to Play") { 
+<script>
+var url = "http://localhost:9000/word/autocompletion/"; 
 
-    @play20.welcome(message, style = "Java")
+$(function(){
+  $( "#tags" ).autocomplete( {
+  	source: function (request, response) {
+         $.ajax({
+             url: "http://localhost:9000/word/autocompletion/" + $( "#tags" ).val(),
+             data: { q: request.term },
+             dataType: "json",
+             success: response,
+             error: function () {
+                 response([]);
+             }
+         });
+     }
+  
+  , autoFocus: true, minLength: 1});
+});
+
+</script>
+
+
+<div class="ui-widget">
+  <label for="tags">Bandas: </label>
+  <input id="tags" >
+</div> 
+
+
 
 }
